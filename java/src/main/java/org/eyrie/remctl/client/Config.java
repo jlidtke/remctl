@@ -6,9 +6,9 @@ import org.eyrie.remctl.core.Utils;
 
 /**
  * Fluid API for setting configuration options that can be used for creating a RemctlConnection or Client.
- * 
+ *
  * @author pradtke
- * 
+ *
  */
 public final class Config {
 
@@ -20,7 +20,8 @@ public final class Config {
     /**
      * port to connect on.
      */
-    private int port = Utils.DEFAULT_PORT;
+    // private int port = Utils.DEFAULT_PORT;
+    private int port = 0;
 
     /**
      * Server principal.
@@ -69,9 +70,9 @@ public final class Config {
 
     /**
      * Simplify building a configuration.
-     * 
+     *
      * @author pradtke
-     * 
+     *
      */
     public static class Builder {
 
@@ -82,10 +83,10 @@ public final class Config {
 
         /**
          * The hostname to connect to.
-         * 
+         *
          * @param hostname
          *            the hostname
-         * 
+         *
          * @return the builder
          */
         public Builder withHostname(final String hostname) {
@@ -95,7 +96,7 @@ public final class Config {
 
         /**
          * The port to connect on. Default is 4347
-         * 
+         *
          * @param port
          *            the port to use
          * @return the builder
@@ -107,7 +108,7 @@ public final class Config {
 
         /**
          * The server principal to use. Defaults to host/servername.
-         * 
+         *
          * @param serverPrincipal
          *            the server prinicpal to use
          * @return the builder
@@ -119,7 +120,7 @@ public final class Config {
 
         /**
          * Set the login context to use when authentication to remctl.
-         * 
+         *
          * @param loginContext
          *            The context
          * @return the builder
@@ -131,7 +132,7 @@ public final class Config {
 
         /**
          * Create the configuration.
-         * 
+         *
          * @return The Remctl config
          */
         public Config build() {
@@ -146,10 +147,13 @@ public final class Config {
             if (this.hostname == null || this.hostname.length() == 0) {
                 throw new IllegalArgumentException("hostname may not be blank");
             }
-            if (this.port == 0) {
-                this.port = Utils.DEFAULT_PORT;
-            }
-            if (this.port < 1) {
+            // Port zero means "use the port from the SRV record".  If a port isn't defined, it
+            // will default to DEFAULT_PORT after attempting to resolve hostname to an SRV
+            // record.
+            // if (this.port == 0) {
+            //     this.port = Utils.DEFAULT_PORT;
+            // }
+            if (this.port < 0) {
                 throw new IllegalArgumentException("port must be greater than 0 " + this.port);
             }
         }
